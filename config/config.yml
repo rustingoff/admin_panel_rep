@@ -1,0 +1,8 @@
+MAIN_PORT:
+  :9999
+
+DB_HOST:
+  localhost
+
+DB_PORT:
+  5432
