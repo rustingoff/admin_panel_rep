@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
+	"github.com/rustingoff/admin_panel_rep/pkg/database"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rustingoff/admin_panel_rep/internal/database"
 	"github.com/spf13/viper"
 )
 
@@ -40,5 +40,8 @@ func main() {
 
 	_ = database.GetPostgresDB()
 
-	router.Run(viper.GetString("MAIN_PORT"))
+	err = router.Run(viper.GetString("MAIN_PORT"))
+	if err != nil {
+		panic(err)
+	}
 }

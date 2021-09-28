@@ -2,42 +2,45 @@ package database
 
 import (
 	"fmt"
+	"github.com/joho/godotenv"
 	"log"
 	"os"
 
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
-
-	_ "github.com/rustingoff/admin_panel_rep/config"
 )
 
 func GetPostgresDB() *sqlx.DB {
 	var (
-		host     = viper.GetString("DB_HOST")
-		port     = viper.GetString("DB__PORT")
-		user     = os.Getenv("POSTGRES_USER")
+		_        = godotenv.Load("./database.env")
+		host     = viper.GetString("postgres.host")
+		port     = viper.GetString("postgres.port")
+		user     = viper.GetString("postgres.user")
 		password = os.Getenv("POSTGRES_PASSWORD")
-		dbname   = os.Getenv("POSTGRES_DB")
+		dbname   = viper.GetString("postgres.db")
 	)
 
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s "+
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 
-	fmt.Println(psqlInfo)
-
 	db, err := sqlx.Open("postgres", psqlInfo)
 	if err != nil {
 		panic(err)
 	}
-	defer db.Close()
+	defer func() {
+		if err := db.Close(); err != nil {
+			log.Panic(err)
+		}
+	}()
 
 	err = db.Ping()
 	if err != nil {
-		panic(err)
+		log.Panic(err)
 	}
 
-	log.Println("POSTGRES CONECT")
+	log.Printf("Postgres succesfully connected !")
+
 	return db
 }
