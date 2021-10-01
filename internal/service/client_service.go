@@ -18,8 +18,8 @@ type clientService struct {
 	repo repository.ClientRepository
 }
 
-func GetClientService() ClientService {
-	return &clientService{}
+func GetClientService(repo repository.ClientRepository) ClientService {
+	return &clientService{repo}
 }
 
 func (cs *clientService) CreateClient(client model.Client) error {

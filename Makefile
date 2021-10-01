@@ -3,3 +3,6 @@ up:
 
 ls:
 	sudo docker ps
+
+run:
+	go run cmd/app/*.go

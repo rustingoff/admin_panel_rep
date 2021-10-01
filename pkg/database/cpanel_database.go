@@ -3,15 +3,24 @@ package database
 import (
 	"fmt"
 	"github.com/joho/godotenv"
+	"github.com/rustingoff/admin_panel_rep/internal/model"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 	"log"
 	"os"
 
-	"github.com/jmoiron/sqlx"
-	_ "github.com/lib/pq"
 	"github.com/spf13/viper"
 )
 
-func GetPostgresDB() *sqlx.DB {
+func GetPostgresDB() *gorm.DB {
+
+	viper.SetConfigName("config")
+	viper.AddConfigPath("./config/")
+	err := viper.ReadInConfig()
+	if err != nil {
+		panic(err)
+	}
+
 	var (
 		_        = godotenv.Load("./database.env")
 		host     = viper.GetString("postgres.host")
@@ -25,22 +34,16 @@ func GetPostgresDB() *sqlx.DB {
 		"password=%s dbname=%s sslmode=disable",
 		host, port, user, password, dbname)
 
-	db, err := sqlx.Open("postgres", psqlInfo)
+	db, err := gorm.Open(postgres.Open(psqlInfo), &gorm.Config{})
 	if err != nil {
 		panic(err)
 	}
-	defer func() {
-		if err := db.Close(); err != nil {
-			log.Panic(err)
-		}
-	}()
-
-	err = db.Ping()
-	if err != nil {
-		log.Panic(err)
-	}
 
 	log.Printf("Postgres succesfully connected !")
+
+	db.AutoMigrate(
+		&model.Client{},
+	)
 
 	return db
 }

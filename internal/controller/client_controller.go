@@ -4,6 +4,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rustingoff/admin_panel_rep/internal/model"
 	"github.com/rustingoff/admin_panel_rep/internal/service"
+	"gopkg.in/go-playground/validator.v9"
 	"log"
 	"net/http"
 	"strconv"
@@ -19,11 +20,12 @@ type ClientController interface {
 }
 
 type clientController struct {
-	cService service.ClientService
+	cService  service.ClientService
+	validator *validator.Validate
 }
 
-func GetClientController(s service.ClientService) ClientController {
-	return &clientController{cService: s}
+func GetClientController(s service.ClientService, v *validator.Validate) ClientController {
+	return &clientController{cService: s, validator: v}
 }
 
 func (cc *clientController) CreateClient(c *gin.Context) {
@@ -33,6 +35,13 @@ func (cc *clientController) CreateClient(c *gin.Context) {
 	if err != nil {
 		log.Printf("FAILED bind json to client structure with error: %v", err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, "invalid request")
+		return
+	}
+
+	err = cc.validator.Struct(client)
+	if err != nil {
+		log.Printf("FAILED validation with error: %v", err)
+		c.AbortWithStatusJSON(http.StatusNotAcceptable, "invalid data")
 		return
 	}
 

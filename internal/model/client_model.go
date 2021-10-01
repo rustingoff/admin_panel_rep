@@ -1,6 +1,7 @@
 package model
 
 import (
+	_ "gopkg.in/go-playground/validator.v9"
 	"gorm.io/gorm"
 	"time"
 )
@@ -12,9 +13,9 @@ type Client struct {
 	FirstName  string `json:"first_name" validate:"required"`
 	LastName   string `json:"last_name" validate:"required"`
 
-	IDNP uint64 `json:"idnp" gorm:"Column:idnp" validate:"required,min=13,max=13"`
+	IDNP uint64 `json:"idnp" gorm:"Column:idnp" validate:"required,min=1000000000000"`
 
-	Phone string `json:"phone" validate:"required,min=10,max=13"`
+	Phone string `json:"phone" validate:"required,min=9,max=13"`
 
 	Sum  uint64 `json:"sum" validate:"required,min=0"`
 	Time uint64 `json:"time" validate:"required,min=0"`
