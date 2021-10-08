@@ -9,7 +9,7 @@ import (
 type UserService interface {
 	CreateUser(client model.User) error
 	DeleteUser(clientID uint) error
-
+	GetUserByUsername(username string) (model.User, error)
 	GetAllUsers() ([]model.User, error)
 	GetUser(clientID uint) (model.User, error)
 }
@@ -41,4 +41,8 @@ func (cs *userService) GetAllUsers() ([]model.User, error) {
 
 func (cs *userService) GetUser(userID uint) (model.User, error) {
 	return cs.repo.GetUser(userID)
+}
+
+func (cs *userService) GetUserByUsername(username string) (model.User, error) {
+	return cs.repo.GetUserByUsername(username)
 }

@@ -7,6 +7,7 @@ import (
 	"github.com/rustingoff/admin_panel_rep/internal/repository"
 	"github.com/rustingoff/admin_panel_rep/internal/service"
 	"github.com/rustingoff/admin_panel_rep/pkg/database"
+	"github.com/rustingoff/admin_panel_rep/pkg/redis"
 	"github.com/spf13/viper"
 	"gopkg.in/go-playground/validator.v9"
 )
@@ -14,6 +15,7 @@ import (
 var (
 	postgresDB = database.GetPostgresDB()
 	vld        = validator.New()
+	_          = redis.GetRedisConnection()
 
 	clientRepository = repository.GetClientRepository(postgresDB)
 	clientService    = service.GetClientService(clientRepository, vld)

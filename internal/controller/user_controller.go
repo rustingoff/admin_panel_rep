@@ -12,7 +12,7 @@ import (
 type UserController interface {
 	CreateUser(c *gin.Context)
 	DeleteUser(c *gin.Context)
-
+	Login(c *gin.Context)
 	GetAllUsers(c *gin.Context)
 	GetUser(c *gin.Context)
 }
@@ -57,9 +57,28 @@ func (cc *userController) DeleteUser(c *gin.Context) {
 	if err != nil {
 		log.Printf("FAILED delete useruser with error: %v", err)
 		c.AbortWithStatusJSON(http.StatusInternalServerError, "server can't delete a user")
+		return
 	}
 
 	c.JSON(http.StatusOK, "deleted")
+}
+
+func (cc *userController) Login(c *gin.Context) {
+	var u model.UserLogin
+	if err := c.ShouldBindJSON(&u); err != nil {
+		log.Printf("invalid json provided, error: %v", err)
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, "Invalid json provided")
+		return
+	}
+
+	user, err := cc.cService.GetUserByUsername(u.Username)
+	if err != nil {
+		log.Printf("user not found, error: %v", err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, "invalid credentials")
+		return
+	}
+
+	//todo check user credentials...
 }
 
 func (cc *userController) GetAllUsers(c *gin.Context) {

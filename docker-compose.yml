@@ -5,6 +5,7 @@ services:
   redis:
     image: redis
     container_name: redis
+    command: redis-server --requirepass redis_QRTASFXVF
     networks:
       - admin_panel
     volumes:

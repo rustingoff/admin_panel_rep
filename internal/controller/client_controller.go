@@ -60,12 +60,14 @@ func (cc *clientController) UpdateClient(c *gin.Context) {
 	if err != nil {
 		log.Printf("FAILED bind json to client update structure with error: %v", err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, "invalid request")
+		return
 	}
 
 	err = cc.cService.UpdateClient(client, uint(clientID))
 	if err != nil {
 		log.Printf("FAILED update client with error: %v", err)
 		c.AbortWithStatusJSON(http.StatusInternalServerError, "server can't update a client")
+		return
 	}
 
 	c.JSON(http.StatusOK, "updated")
@@ -83,6 +85,7 @@ func (cc *clientController) DeleteClient(c *gin.Context) {
 	if err != nil {
 		log.Printf("FAILED delete client with error: %v", err)
 		c.AbortWithStatusJSON(http.StatusInternalServerError, "server can't delete a client")
+		return
 	}
 
 	c.JSON(http.StatusOK, "deleted")

@@ -10,7 +10,7 @@ const _UserRole = 0
 type UserRepository interface {
 	CreateUser(user model.User) error
 	DeleteUser(userID uint) error
-
+	GetUserByUsername(username string) (model.User, error)
 	GetAllUsers() ([]model.User, error)
 	GetUser(userID uint) (model.User, error)
 }
@@ -46,5 +46,12 @@ func (cr *userRepository) GetUser(userID uint) (model.User, error) {
 	var user model.User
 
 	res := cr.db.Debug().Where("id = ?", userID).Find(&user)
+	return user, res.Error
+}
+
+func (cr *userRepository) GetUserByUsername(username string) (model.User, error) {
+	var user model.User
+
+	res := cr.db.Debug().Where("username = ?", username).Find(&user)
 	return user, res.Error
 }
