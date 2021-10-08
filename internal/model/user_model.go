@@ -15,4 +15,11 @@ type User struct {
 	Password string `json:"password" validate:"required,min=8,max=64"`
 
 	Email string `json:"email" validate:"min=0,max=32,email"`
+
+	Role uint `json:"-" gorm:"Column:role"`
+}
+
+type UserLogin struct {
+	Username string `json:"username" validate:"required,min=2,max=32"`
+	Password string `json:"password" validate:"required,min=8,max=32"`
 }

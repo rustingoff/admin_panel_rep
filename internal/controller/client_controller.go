@@ -4,7 +4,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/rustingoff/admin_panel_rep/internal/model"
 	"github.com/rustingoff/admin_panel_rep/internal/service"
-	"gopkg.in/go-playground/validator.v9"
 	"log"
 	"net/http"
 	"strconv"
@@ -20,28 +19,20 @@ type ClientController interface {
 }
 
 type clientController struct {
-	cService  service.ClientService
-	validator *validator.Validate
+	cService service.ClientService
 }
 
-func GetClientController(s service.ClientService, v *validator.Validate) ClientController {
-	return &clientController{cService: s, validator: v}
+func GetClientController(s service.ClientService) ClientController {
+	return &clientController{cService: s}
 }
 
 func (cc *clientController) CreateClient(c *gin.Context) {
 	var client model.Client
 
-	err := c.BindJSON(&client)
+	err := c.ShouldBindJSON(&client)
 	if err != nil {
 		log.Printf("FAILED bind json to client structure with error: %v", err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, "invalid request")
-		return
-	}
-
-	err = cc.validator.Struct(client)
-	if err != nil {
-		log.Printf("FAILED validation with error: %v", err)
-		c.AbortWithStatusJSON(http.StatusNotAcceptable, "invalid data")
 		return
 	}
 
@@ -94,7 +85,7 @@ func (cc *clientController) DeleteClient(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusInternalServerError, "server can't delete a client")
 	}
 
-	c.JSON(http.StatusOK, "updated")
+	c.JSON(http.StatusOK, "deleted")
 }
 
 func (cc *clientController) GetAllClients(c *gin.Context) {

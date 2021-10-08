@@ -43,6 +43,7 @@ func GetPostgresDB() *gorm.DB {
 
 	db.AutoMigrate(
 		&model.Client{},
+		&model.User{},
 	)
 
 	return db

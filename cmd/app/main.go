@@ -16,8 +16,8 @@ var (
 	vld        = validator.New()
 
 	clientRepository = repository.GetClientRepository(postgresDB)
-	clientService    = service.GetClientService(clientRepository)
-	clientController = controller.GetClientController(clientService, vld)
+	clientService    = service.GetClientService(clientRepository, vld)
+	clientController = controller.GetClientController(clientService)
 )
 
 func main() {
