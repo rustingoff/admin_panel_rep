@@ -41,10 +41,15 @@ func GetPostgresDB() *gorm.DB {
 
 	log.Printf("Postgres succesfully connected !")
 
-	db.AutoMigrate(
+	err = db.AutoMigrate(
 		&model.Client{},
 		&model.User{},
 	)
+	if err != nil {
+		panic(err)
+	}
+
+	log.Println("Successful migration")
 
 	return db
 }
