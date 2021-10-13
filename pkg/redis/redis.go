@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-func GetRedisConnection() *redis.Client {
+func getRedisConnection() *redis.Client {
 
 	viper.SetConfigName("config")
 	viper.AddConfigPath("./config/")
@@ -38,4 +38,10 @@ func GetRedisConnection() *redis.Client {
 
 	log.Println("Redis successfully connected !")
 	return rdb
+}
+
+var Client *redis.Client
+
+func init() {
+	Client = getRedisConnection()
 }

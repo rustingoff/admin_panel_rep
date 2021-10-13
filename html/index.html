@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Document</title>
+    <link href="csstyle.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <link href="imgogo_4.png" rel="icon" type="image/x-icon">
+</head>
+<body>
+<header>
+    <div class="container">
+        <div class="head">
+            <div class="logo">
+                <a href="/"><img alt="logo" src="static/img/logo_4.png"></a>
+            </div>
+            <div class="contact">
+                <a href="tel:+37379606044">079 60 60 44</a>
+            </div>
+        </div>
+    </div>
+</header>
+<main class="main">
+    <div class="wrapper">
+        <div class="container">
+            <div class="main__content">
+                <div class="main__fields">
+                    <div class="main__txt">
+                        <h1><a href="data-base.html">Completati datele</a></h1>
+                    </div>
+                    <div class="main__forms">
+                        <form action="">
+                            <div class="form__contact">
+                                <input placeholder="Nume/Prenume" required type="text">
+                                <input placeholder="Nr contact" required type="number">
+                                <input placeholder="IDNP" required type="number">
+                                <input placeholder="Nr de telefon" required type="tel">
+                                <input placeholder="Suma" required type="number">
+                                <input placeholder="Termen" required type="number">
+                                <input id="dates" onblur="(this.type='text')" onfocus="(this.type='date')"
+                                       placeholder="Data semnarii" required type="text">
+                                <input placeholder="Rata lunara" required type="number">
+                                <label for="more-Boxes">
+                                    <input id="more-Boxes" onclick="checkInput()" type="checkbox"> Client cu garant?
+                                </label>
+                            </div>
+                            <div class="form__btn">
+                                <button>Completeaza</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+                <div class="main__fields" id="open-form-1" style="display: none">
+                    <div class="main__txt">
+                        <h1>Persoana garant nr.1</h1>
+                    </div>
+                    <div class="main__forms">
+                        <form action="">
+                            <div class="form__contact">
+                                <input placeholder="Nume/Prenume" required type="text">
+                                <input placeholder="Nr contact" required type="number">
+                                <input placeholder="IDNP" required type="number">
+                                <input placeholder="Nr de telefon" required type="tel">
+                                <input placeholder="Suma" required type="number">
+                                <input placeholder="Termen" required type="number">
+                                <input id="date-1" onblur="(this.type='text')" onfocus="(this.type='date')"
+                                       placeholder="Data semnarii" required type="text">
+                                <input placeholder="Rata lunara" required type="number">
+                                <label for="clientTwo">
+                                    <input id="clientTwo" onclick="checkInput()" type="checkbox"> Plus un garant
+                                </label>
+                            </div>
+                            <div class="form__btn buton">
+                                <button>Completeaza</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+                <div class="main__fields" id="open-form-3" style="display: none">
+                    <div class="main__txt">
+                        <h1>Persoana garant nr.2</h1>
+                    </div>
+                    <div class="main__forms">
+                        <form action="">
+                            <div class="form__contact">
+                                <input placeholder="Nume/Prenume" required type="text">
+                                <input placeholder="Nr contact" required type="number">
+                                <input placeholder="IDNP" required type="number">
+                                <input placeholder="Nr de telefon" required type="tel">
+                                <input placeholder="Suma" required type="number">
+                                <input placeholder="Termen" required type="number">
+                                <input id="date-2" onblur="(this.type='text')" onfocus="(this.type='date')"
+                                       placeholder="Data semnarii" required type="text">
+                                <input placeholder="Rata lunara" required type="number">
+                                <label for="clientThree">
+                                    <input id="clientThree" onclick="checkInput()" type="checkbox"> Plus un garant
+                                </label>
+                            </div>
+                            <div class="form__btn buton">
+                                <button>Completeaza</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+                <div class="main__fields" id="open-form-4" style="display: none">
+                    <div class="main__txt">
+                        <h1>Persoana garant nr.3</h1>
+                    </div>
+                    <div class="main__forms">
+                        <form action="">
+                            <div class="form__contact">
+                                <input placeholder="Nume/Prenume" required type="text">
+                                <input placeholder="Nr contact" required type="number">
+                                <input placeholder="IDNP" required type="number">
+                                <input placeholder="Nr de telefon" required type="tel">
+                                <input placeholder="Suma" required type="number">
+                                <input placeholder="Termen" required type="number">
+                                <input id="date-3" onblur="(this.type='text')" onfocus="(this.type='date')"
+                                       placeholder="Data semnarii" required type="text">
+                                <input placeholder="Rata lunara" required type="number">
+                            </div>
+                            <div class="form__btn buton">
+                                <button>Completeaza</button>
+                            </div>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<footer class="footer">
+    <div class="container">
+        <div class="copy">
+            <p>
+                © 2021 Organizație de creditare nebancară REAL CREDIT
+            </p>
+        </div>
+    </div>
+
+</footer>
+<script src="js/script.js"></script>
+</body>
+</html>

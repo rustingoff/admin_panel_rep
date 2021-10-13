@@ -2,16 +2,15 @@ package controller
 
 import (
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
-	"github.com/joho/godotenv"
 	"github.com/rustingoff/admin_panel_rep/internal/model"
 	"github.com/rustingoff/admin_panel_rep/internal/service"
 	"github.com/rustingoff/admin_panel_rep/pkg/hash"
-	"github.com/spf13/viper"
+	"github.com/rustingoff/admin_panel_rep/pkg/jwt"
+	_ "github.com/spf13/viper"
+	_ "github.com/twinj/uuid"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 	"time"
 )
@@ -20,6 +19,7 @@ type UserController interface {
 	CreateUser(c *gin.Context)
 	DeleteUser(c *gin.Context)
 	Login(c *gin.Context)
+	Logout(c *gin.Context)
 	GetAllUsers(c *gin.Context)
 	GetUser(c *gin.Context)
 }
@@ -48,6 +48,19 @@ func (cc *userController) CreateUser(c *gin.Context) {
 		return
 	}
 
+	tokenAuth, err := jwt.ExtractTokenMetadata(c.Request)
+	if err != nil {
+		log.Printf("FAILED to extract token metadata with error: %v", err)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
+	userId, err := jwt.FetchAuth(tokenAuth)
+	if err != nil {
+		log.Printf("FAILED to fetch auth with error: %v", err)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "unauthorized")
+		return
+	}
+
 	err = cc.cService.CreateUser(user)
 	if err != nil {
 		log.Printf("FAILED create user with error: %v", err)
@@ -55,7 +68,7 @@ func (cc *userController) CreateUser(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusCreated, "created")
+	c.JSON(http.StatusCreated, userId)
 }
 
 func (cc *userController) DeleteUser(c *gin.Context) {
@@ -77,11 +90,9 @@ func (cc *userController) DeleteUser(c *gin.Context) {
 }
 
 func (cc *userController) Login(c *gin.Context) {
-	var u model.UserLogin
-	if err := c.ShouldBindJSON(&u); err != nil {
-		log.Printf("invalid json provided, error: %v", err)
-		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, "Invalid json provided")
-		return
+	var u = model.UserLogin{
+		Username: c.PostForm("username"),
+		Password: c.PostForm("password"),
 	}
 
 	user, err := cc.cService.GetUserByUsername(u.Username)
@@ -91,7 +102,6 @@ func (cc *userController) Login(c *gin.Context) {
 		return
 	}
 
-	//todo check user credentials...
 	ok := hash.CheckPasswordHash(u.Password, user.Password)
 	if !ok {
 		log.Printf("invalid password\n")
@@ -99,12 +109,20 @@ func (cc *userController) Login(c *gin.Context) {
 		return
 	}
 
-	token, err := CreateToken(user.ID)
+	token, err := jwt.CreateToken(user.ID)
 	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, err.Error())
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, err.Error())
 		return
 	}
-	c.JSON(http.StatusOK, token)
+
+	saveErr := jwt.CreateAuth(user.ID, token)
+	if saveErr != nil {
+		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, saveErr.Error())
+		return
+	}
+	fmt.Println(time.Now(), token.AtExpires)
+	c.SetCookie("Authorization", token.AccessToken, 8*60*60, "", "localhost", false, true)
+	c.JSON(http.StatusOK, token.AccessToken)
 }
 
 func (cc *userController) GetAllUsers(c *gin.Context) {
@@ -137,29 +155,16 @@ func (cc *userController) GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func CreateToken(userid uint) (string, error) {
-	var err error
-	//Creating Access Token
-	viper.SetConfigName("config")
-	viper.AddConfigPath("./config/")
-	err = viper.ReadInConfig()
+func (cc *userController) Logout(c *gin.Context) {
+	au, err := jwt.ExtractTokenMetadata(c.Request)
 	if err != nil {
-		panic(err)
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "unauthorized")
+		return
 	}
-	_ = godotenv.Load("./database.env")
-
-	acs := os.Getenv("ACCESS_SECRET")
-
-	fmt.Println(acs)
-
-	atClaims := jwt.MapClaims{}
-	atClaims["authorized"] = true
-	atClaims["user_id"] = userid
-	atClaims["exp"] = time.Now().Add(time.Minute * 15).Unix()
-	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
-	token, err := at.SignedString([]byte(acs))
-	if err != nil {
-		return "", err
+	deleted, delErr := jwt.DeleteAuth(au.AccessUuid)
+	if delErr != nil || deleted == 0 {
+		c.AbortWithStatusJSON(http.StatusUnauthorized, "unauthorized")
+		return
 	}
-	return token, nil
+	c.JSON(http.StatusOK, "Successfully logged out")
 }

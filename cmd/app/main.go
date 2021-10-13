@@ -4,19 +4,19 @@ import (
 	"github.com/gin-gonic/gin"
 	server "github.com/rustingoff/admin_panel_rep"
 	"github.com/rustingoff/admin_panel_rep/internal/controller"
+	"github.com/rustingoff/admin_panel_rep/internal/middleware"
 	"github.com/rustingoff/admin_panel_rep/internal/repository"
 	"github.com/rustingoff/admin_panel_rep/internal/service"
 	"github.com/rustingoff/admin_panel_rep/pkg/database"
-	"github.com/rustingoff/admin_panel_rep/pkg/redis"
 	"github.com/spf13/viper"
 	"gopkg.in/go-playground/validator.v9"
 	"net/http"
+	"text/template"
 )
 
 var (
 	postgresDB = database.GetPostgresDB()
 	vld        = validator.New()
-	_          = redis.GetRedisConnection()
 
 	clientRepository = repository.GetClientRepository(postgresDB)
 	clientService    = service.GetClientService(clientRepository, vld)
@@ -28,39 +28,43 @@ var (
 )
 
 func main() {
-	router := gin.Default()
 
 	viper.SetConfigName("config")
 	viper.AddConfigPath("./config/")
+
 	err := viper.ReadInConfig()
 	if err != nil {
 		panic(err)
 	}
 
-	router.GET("/", func(c *gin.Context) {
-		c.JSON(http.StatusOK, "OK")
-	})
+	router := gin.Default()
+	router.Use(gin.Logger())
+	router.Use(gin.Recovery())
 
 	panelRouter := router.Group("/api")
 	{
-		//GET todo
-		panelRouter.GET("/", clientController.GetAllClients)
-		panelRouter.GET("/:clientID", clientController.GetClient)
-		// panelRouter.GET()
+		panelRouter.Static("/static/", "html/")
+		tmpl := template.Must(template.ParseFiles("html/login.html"))
+		panelRouter.GET("/", func(c *gin.Context) {
+			err := tmpl.Execute(c.Writer, nil)
+			if err != nil {
+				c.AbortWithStatusJSON(http.StatusInternalServerError, "can't execute a template")
+				return
+			}
+		})
 
-		//CREATE todo
-		panelRouter.POST("/", clientController.CreateClient)
+		panelRouter.POST("/login", userController.Login)
 
-		//UPDATE todo
-		panelRouter.PATCH("/:clientID", clientController.UpdateClient)
-
-		//DELETE todo
-		panelRouter.DELETE("/:clientID", clientController.DeleteClient)
+		panelRouter.GET("/client", middleware.TokenAuthMiddleware(), clientController.GetAllClients)
+		panelRouter.GET("/client/:clientID", middleware.TokenAuthMiddleware(), clientController.GetClient)
+		panelRouter.POST("/client", middleware.TokenAuthMiddleware(), clientController.CreateClient)
+		panelRouter.PATCH("/client/:clientID", middleware.TokenAuthMiddleware(), clientController.UpdateClient)
+		panelRouter.DELETE("/client/:clientID", middleware.TokenAuthMiddleware(), clientController.DeleteClient)
 
 		adminRouter := panelRouter.Group("/cmd")
 		{
-			adminRouter.POST("/login", userController.Login)
-			adminRouter.POST("/", userController.CreateUser)
+			adminRouter.POST("/", middleware.TokenAuthMiddleware(), userController.CreateUser)
+			adminRouter.GET("/logout", middleware.TokenAuthMiddleware(), userController.Logout)
 		}
 	}
 
