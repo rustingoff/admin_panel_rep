@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+          name="viewport">
+    <meta content="ie=edge" http-equiv="X-UA-Compatible">
+    <title>Document</title>
+    <link href="static/css/client.css" rel="stylesheet">
+    <link href="static/img/logo_4.png" rel="icon" type="image/x-icon">
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,700;1,600&display=swap"
+          rel="stylesheet">
+</head>
+<body>
+<div class="wrapper">
+    <header class="header">
+        <div class="container">
+            <div class="header__row">
+                <div class="header__logo">
+                    <img alt="logo" src="static/img/logo_4.png">
+                </div>
+                <div class="header__nav">
+                    <a href="login.html">Log Out</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="database">
+        <div class="container">
+            <div class="table">
+                <table>
+                    <tbody>
+                    <tr>
+                        <td>Nume/Prenume</td>
+                        <td>Nr contact</td>
+                        <td>IDNP</td>
+                        <td>Nr de telefon</td>
+                        <td>Suma</td>
+                        <td>Termen</td>
+                        <td>Data semnarii</td>
+                        <td>Rata lunara</td>
+                    </tr>
+                    {{ range . }}
+                    <tr>
+                        <td>{{ .LastName }} {{ .FirstName }}</td>
+                        <td>{{ .NrContract }}</td>
+                        <td>{{ .IDNP }}</td>
+                        <td>{{ .Phone }}</td>
+                        <td>{{ .Sum }}</td>
+                        <td>{{ .Time }}</td>
+                        <td>{{ .SignDate }}</td>
+                        <td>{{ .MonthlyRate }}</td>
+                    </tr>
+                    {{ end }}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<footer class="footer-1">
+    <div class="container">
+        <div class="copy">
+            <p>
+                © 2021 Organizație de creditare nebancară REAL CREDIT
+            </p>
+        </div>
+    </div>
+
+</footer>
+</body>
+</html>

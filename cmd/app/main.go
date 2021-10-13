@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	server "github.com/rustingoff/admin_panel_rep"
 	"github.com/rustingoff/admin_panel_rep/internal/controller"
@@ -11,7 +12,7 @@ import (
 	"github.com/spf13/viper"
 	"gopkg.in/go-playground/validator.v9"
 	"net/http"
-	"text/template"
+	"time"
 )
 
 var (
@@ -29,6 +30,8 @@ var (
 
 func main() {
 
+	fmt.Println(time.Now().Format(time.RFC3339))
+
 	viper.SetConfigName("config")
 	viper.AddConfigPath("./config/")
 
@@ -40,20 +43,17 @@ func main() {
 	router := gin.Default()
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
+	router.LoadHTMLFiles("html/login.html", "html/index.html", "html/client.html")
 
 	panelRouter := router.Group("/api")
 	{
 		panelRouter.Static("/static/", "html/")
-		tmpl := template.Must(template.ParseFiles("html/login.html"))
+
 		panelRouter.GET("/", func(c *gin.Context) {
-			err := tmpl.Execute(c.Writer, nil)
-			if err != nil {
-				c.AbortWithStatusJSON(http.StatusInternalServerError, "can't execute a template")
-				return
-			}
+			c.HTML(http.StatusOK, "login.html", nil)
 		})
 
-		panelRouter.POST("/login", userController.Login)
+		panelRouter.POST("/home", userController.Login, clientController.GetAllClients)
 
 		panelRouter.GET("/client", middleware.TokenAuthMiddleware(), clientController.GetAllClients)
 		panelRouter.GET("/client/:clientID", middleware.TokenAuthMiddleware(), clientController.GetClient)

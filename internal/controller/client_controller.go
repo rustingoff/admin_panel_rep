@@ -100,7 +100,7 @@ func (cc *clientController) GetAllClients(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, response)
+	c.HTML(http.StatusOK, "client.html", response)
 }
 
 func (cc *clientController) GetClient(c *gin.Context) {

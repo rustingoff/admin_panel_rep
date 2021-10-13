@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/rustingoff/admin_panel_rep/internal/model"
 	"github.com/rustingoff/admin_panel_rep/internal/service"
@@ -12,7 +11,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 type UserController interface {
@@ -120,9 +118,9 @@ func (cc *userController) Login(c *gin.Context) {
 		c.AbortWithStatusJSON(http.StatusUnprocessableEntity, saveErr.Error())
 		return
 	}
-	fmt.Println(time.Now(), token.AtExpires)
+
 	c.SetCookie("Authorization", token.AccessToken, 8*60*60, "", "localhost", false, true)
-	c.JSON(http.StatusOK, token.AccessToken)
+	c.Next()
 }
 
 func (cc *userController) GetAllUsers(c *gin.Context) {

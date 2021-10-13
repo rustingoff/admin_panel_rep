@@ -13,7 +13,7 @@ type Client struct {
 	FirstName  string `json:"first_name" validate:"required"`
 	LastName   string `json:"last_name" validate:"required"`
 
-	IDNP uint64 `json:"idnp" gorm:"Column:idnp" validate:"required,min=1000000000000"`
+	IDNP uint64 `json:"idnp" gorm:"Column:idnp" validate:"required,min=13"`
 
 	Phone string `json:"phone" validate:"required,min=9,max=13"`
 
