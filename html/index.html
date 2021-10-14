@@ -21,6 +21,7 @@
             </div>
             <div class="contact">
                 <a href="#" class="contact__link">Adăuga Client</a>
+                <a href="/api/clients" class="contact__link">Vezi Clienti</a>
                 <a href="#" class="contact__link">Adăuga utilizator</a>
                 <a href="#" class="contact__link">Log Out</a>
             </div>
@@ -36,7 +37,7 @@
                         <h1>Completati datele</h1>
                     </div>
                     <div class="main__forms">
-                        <form action="">
+                        <form action="/api/clients" method="post">
                             <div class="form__contact">
                                 <input placeholder="Nume/Prenume" required type="text">
                                 <input placeholder="Nr contact" required type="number">
@@ -52,7 +53,7 @@
                                 </label>
                             </div>
                             <div class="form__btn">
-                                <button>Completeaza</button>
+                                <button type="submit">Completeaza</button>
                             </div>
 
                         </form>

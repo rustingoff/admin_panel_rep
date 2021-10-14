@@ -156,13 +156,17 @@ func (cc *userController) GetUser(c *gin.Context) {
 func (cc *userController) Logout(c *gin.Context) {
 	au, err := jwt.ExtractTokenMetadata(c.Request)
 	if err != nil {
+		log.Println(err.Error())
 		c.AbortWithStatusJSON(http.StatusUnauthorized, "unauthorized")
-		return
 	}
+
 	deleted, delErr := jwt.DeleteAuth(au.AccessUuid)
 	if delErr != nil || deleted == 0 {
+		log.Println(deleted)
 		c.AbortWithStatusJSON(http.StatusUnauthorized, "unauthorized")
-		return
 	}
-	c.JSON(http.StatusOK, "Successfully logged out")
+
+	c.SetCookie("Authorization", "", 60, "", "localhost", false, true)
+
+	c.Redirect(http.StatusTemporaryRedirect, "/api/")
 }

@@ -4,9 +4,11 @@ import (
 	"github.com/gin-gonic/gin"
 	server "github.com/rustingoff/admin_panel_rep"
 	"github.com/rustingoff/admin_panel_rep/internal/controller"
+	"github.com/rustingoff/admin_panel_rep/internal/middleware"
 	"github.com/rustingoff/admin_panel_rep/internal/repository"
 	"github.com/rustingoff/admin_panel_rep/internal/service"
 	"github.com/rustingoff/admin_panel_rep/pkg/database"
+	"github.com/rustingoff/admin_panel_rep/pkg/jwt"
 	"github.com/spf13/viper"
 	"gopkg.in/go-playground/validator.v9"
 	"net/http"
@@ -36,7 +38,7 @@ func main() {
 
 	router := gin.Default()
 	router.Use(gin.Logger())
-	router.Use(gin.Recovery())
+	//router.Use(gin.Recovery())
 	router.LoadHTMLFiles("html/login.html", "html/index.html", "html/client.html")
 
 	panelRouter := router.Group("/api")
@@ -44,11 +46,30 @@ func main() {
 		panelRouter.Static("/static/", "html/")
 
 		panelRouter.GET("/", func(c *gin.Context) {
+			err := jwt.TokenValid(c.Request)
+			if err != nil {
+				c.HTML(http.StatusUnauthorized, "login.html", nil)
+			} else {
+				c.Redirect(http.StatusPermanentRedirect, "clients/")
+			}
+		})
+
+		panelRouter.POST("/", func(c *gin.Context) {
 			c.HTML(http.StatusUnauthorized, "login.html", nil)
 		})
+
 		panelRouter.POST("/home", userController.Login)
 
-		panelRouter.GET("/clients", clientController.GetAllClients)
+		panelRouter.GET("/home", func(c *gin.Context) {
+			c.HTML(http.StatusOK, "index.html", nil)
+		})
+		panelRouter.POST("/clients", middleware.TokenAuthMiddleware(), clientController.CreateClient)
+		panelRouter.GET("/clients", middleware.TokenAuthMiddleware(), clientController.GetAllClients)
+		panelRouter.GET("/clients/:client_id", clientController.GetClient)
+		panelRouter.POST("/clients/update/:client_id", clientController.UpdateClient)
+		panelRouter.POST("/clients/delete/:client_id", clientController.DeleteClient)
+
+		panelRouter.POST("/log_out", userController.Logout)
 	}
 
 	srv := new(server.Server)

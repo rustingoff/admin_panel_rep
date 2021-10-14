@@ -22,10 +22,12 @@
                     <img alt="logo" src="static/img/logo_4.png">
                 </div>
                 <div class="header__nav">
-                    <a href="#">Acasa</a>
-                    <a href="#">Adăuga Client</a>
+                    <a href="/api/clients">Acasa</a>
+                    <a href="/api/home">Adăuga Client</a>
                     <a href="#">Adăuga utilizator</a>
-                    <a href="#">Log Out</a>
+                    <form action="/api/log_out" method="post">
+                        <button type="submit">Log Out</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -45,6 +47,7 @@
                         <td>Termen</td>
                         <td>Data semnarii</td>
                         <td>Rata lunara</td>
+                        <td>Actiune</td>
                     </tr>
                     {{ range . }}
                         <tr>
@@ -56,15 +59,16 @@
                             <td>{{ .Time }}</td>
                             <td>{{ .SignDate }}</td>
                             <td>{{ .MonthlyRate }}</td>
+                            <td>
+                                <div class="table__btn">
+                                    <button>Edit</button>
+                                    <button>Șterge</button>
+                                </div>
+                            </td>
                         </tr>
                     {{ end }}
                     </tbody>
                 </table>
-                <div class="table__btn">
-                    <button>Edit</button>
-                    <button>Șterge</button>
-                </div>
-
             </div>
         </div>
     </div>

@@ -175,15 +175,11 @@ h6 {
   margin-top: 20%;
 }
 
-.table__btn {
-  margin-left: 50px;
-}
-
 .table__btn button {
-  width: 150px;
-  height: 50px;
+  width: 100px;
+  height: 40px;
   font-family: "poppins", sans-serif;
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 1px;
   border-radius: 5px;
   border: 1px solid #cecece;
@@ -203,10 +199,6 @@ h6 {
 .table__btn button:active {
   -webkit-box-shadow: 0 8px 20px -3px rgba(122, 122, 122, 0.39);
   box-shadow: 0 8px 20px -3px rgba(122, 122, 122, 0.39);
-}
-
-.table__btn button:nth-child(2) {
-  margin-top: 20px;
 }
 
 table {
