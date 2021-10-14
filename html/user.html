@@ -6,7 +6,7 @@
           name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
     <title>Document</title>
-    <link href="static/css/login.css" rel="stylesheet">
+    <link href="static/css/user.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,300;0,700;1,600&display=swap"
@@ -20,20 +20,29 @@
             <div class="login__details">
                 <div class="login__logo">
                     <img alt="logo" src="static/img/logo_4.png">
-                    <h1>Login</h1>
+                    <h1>Update user</h1>
                 </div>
                 <div class="login__userDetails">
-                    <form action="/api/home" method="post">
+                    <form action="">
                         <div class="login__info">
                             <div class="login__pass">
                                 <label>
-                                    <input placeholder="Username" name="username" type="text">
+                                    <input placeholder="Numele dvs" name="first_name" type="text">
                                 </label>
                                 <label>
-                                    <input placeholder="Password" name="password" type="password">
+                                    <input placeholder="Prenumele dvs" name="last_name" type="text">
+                                </label>
+                                <label>
+                                    <input placeholder="Login" type="text">
+                                </label>
+                                <label>
+                                    <input placeholder="Parola" type="password">
+                                </label>
+                                <label>
+                                    <input placeholder="Email" type="email">
                                 </label>
                             </div>
-                            <button class="login__btn">Intra in cabinet</button>
+                            <button class="login__btn">Create user</button>
                         </div>
                     </form>
                 </div>

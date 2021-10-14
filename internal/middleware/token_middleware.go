@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/rustingoff/admin_panel_rep/pkg/jwt"
 	"net/http"
@@ -14,6 +15,7 @@ func TokenAuthMiddleware() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
+		fmt.Println(err)
 		c.Next()
 	}
 }

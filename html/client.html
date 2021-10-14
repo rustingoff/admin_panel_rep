@@ -6,7 +6,7 @@
           name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
     <title>Document</title>
-    <link href="static/css/client.css" rel="stylesheet">
+    <link href="static/css/data-base.css" rel="stylesheet">
     <link href="static/img/logo_4.png" rel="icon" type="image/x-icon">
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
@@ -22,7 +22,10 @@
                     <img alt="logo" src="static/img/logo_4.png">
                 </div>
                 <div class="header__nav">
-                    <a href="login.html">Log Out</a>
+                    <a href="#">Acasa</a>
+                    <a href="#">Adăuga Client</a>
+                    <a href="#">Adăuga utilizator</a>
+                    <a href="#">Log Out</a>
                 </div>
             </div>
         </div>
@@ -44,19 +47,24 @@
                         <td>Rata lunara</td>
                     </tr>
                     {{ range . }}
-                    <tr>
-                        <td>{{ .LastName }} {{ .FirstName }}</td>
-                        <td>{{ .NrContract }}</td>
-                        <td>{{ .IDNP }}</td>
-                        <td>{{ .Phone }}</td>
-                        <td>{{ .Sum }}</td>
-                        <td>{{ .Time }}</td>
-                        <td>{{ .SignDate }}</td>
-                        <td>{{ .MonthlyRate }}</td>
-                    </tr>
+                        <tr>
+                            <td>{{ .LastName }} {{ .FirstName }}</td>
+                            <td>{{ .NrContract }}</td>
+                            <td>{{ .IDNP }}</td>
+                            <td>{{ .Phone }}</td>
+                            <td>{{ .Sum }}</td>
+                            <td>{{ .Time }}</td>
+                            <td>{{ .SignDate }}</td>
+                            <td>{{ .MonthlyRate }}</td>
+                        </tr>
                     {{ end }}
                     </tbody>
                 </table>
+                <div class="table__btn">
+                    <button>Edit</button>
+                    <button>Șterge</button>
+                </div>
+
             </div>
         </div>
     </div>

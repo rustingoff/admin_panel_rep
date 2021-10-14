@@ -120,7 +120,7 @@ func (cc *userController) Login(c *gin.Context) {
 	}
 
 	c.SetCookie("Authorization", token.AccessToken, 8*60*60, "", "localhost", false, true)
-	c.Next()
+	c.HTML(http.StatusOK, "index.html", nil)
 }
 
 func (cc *userController) GetAllUsers(c *gin.Context) {
