@@ -3,7 +3,6 @@ package model
 import (
 	_ "gopkg.in/go-playground/validator.v9"
 	"gorm.io/gorm"
-	"time"
 )
 
 type Client struct {
@@ -20,9 +19,9 @@ type Client struct {
 	Sum  uint64 `json:"sum" validate:"required,min=0"`
 	Time uint64 `json:"time" validate:"required,min=0"`
 
-	SignDate time.Time `json:"sign_date" validate:"required"`
+	SignDate string `json:"sign_date" validate:"required"`
 
-	MonthlyRate float64 `json:"monthly_rate" validate:"required,min=0"`
+	MonthlyRate string `json:"monthly_rate" validate:"required,min=0"`
 }
 
 type ClientUpdate struct {
@@ -30,13 +29,12 @@ type ClientUpdate struct {
 	FirstName  string `json:"first_name"`
 	LastName   string `json:"last_name"`
 
-	IDNP uint64 `json:"idnp" gorm:"Column:idnp" validate:"min=13,max=13"`
+	IDNP uint64 `json:"idnp" gorm:"Column:idnp"`
 
-	Phone string `json:"phone" validate:"min=10,max=13"`
+	Phone string `json:"phone"`
 
-	Sum  uint64 `json:"sum" validate:"required,min=0"`
-	Time uint64 `json:"time" validate:"required,min=0"`
+	Sum  uint64 `json:"sum"`
+	Time uint64 `json:"time"`
 
-	SignDate    time.Time `json:"sign_date" validate:"required"`
-	MonthlyRate float64   `json:"monthly_rate" validate:"required,min=0"`
+	SignDate string `json:"sign_date"`
 }

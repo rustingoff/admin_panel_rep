@@ -12,6 +12,7 @@ import (
 	"github.com/spf13/viper"
 	"gopkg.in/go-playground/validator.v9"
 	"net/http"
+	"strconv"
 )
 
 var (
@@ -39,7 +40,7 @@ func main() {
 	router := gin.Default()
 	router.Use(gin.Logger())
 	//router.Use(gin.Recovery())
-	router.LoadHTMLFiles("html/login.html", "html/index.html", "html/client.html")
+	router.LoadHTMLFiles("html/login.html", "html/index.html", "html/client.html", "html/client_update.html")
 
 	panelRouter := router.Group("/api")
 	{
@@ -50,7 +51,7 @@ func main() {
 			if err != nil {
 				c.HTML(http.StatusUnauthorized, "login.html", nil)
 			} else {
-				c.Redirect(http.StatusPermanentRedirect, "clients/")
+				c.Redirect(http.StatusPermanentRedirect, "home/")
 			}
 		})
 
@@ -65,11 +66,21 @@ func main() {
 		})
 		panelRouter.POST("/clients", middleware.TokenAuthMiddleware(), clientController.CreateClient)
 		panelRouter.GET("/clients", middleware.TokenAuthMiddleware(), clientController.GetAllClients)
-		panelRouter.GET("/clients/:client_id", clientController.GetClient)
-		panelRouter.POST("/clients/update/:client_id", clientController.UpdateClient)
-		panelRouter.POST("/clients/delete/:client_id", clientController.DeleteClient)
+		//panelRouter.GET("/clients/:client_id", middleware.TokenAuthMiddleware(), clientController.GetClient)
 
-		panelRouter.POST("/log_out", userController.Logout)
+		panelRouter.POST("/clients/update/", middleware.TokenAuthMiddleware(), clientController.UpdateClient)
+		panelRouter.GET("/clients/update/", middleware.TokenAuthMiddleware(), func(c *gin.Context) {
+			idQ := c.Query("id")
+			id, err := strconv.Atoi(idQ)
+			if err != nil {
+				c.Redirect(http.StatusTemporaryRedirect, "/clients")
+			}
+			c.HTML(http.StatusOK, "client_update.html", id)
+		})
+
+		panelRouter.GET("/clients/delete/", middleware.TokenAuthMiddleware(), clientController.DeleteClient)
+
+		panelRouter.GET("/log_out", middleware.TokenAuthMiddleware(), userController.Logout)
 	}
 
 	srv := new(server.Server)

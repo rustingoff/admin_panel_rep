@@ -168,5 +168,5 @@ func (cc *userController) Logout(c *gin.Context) {
 
 	c.SetCookie("Authorization", "", 60, "", "localhost", false, true)
 
-	c.Redirect(http.StatusTemporaryRedirect, "/api/")
+	c.HTML(http.StatusOK, "login.html", nil)
 }

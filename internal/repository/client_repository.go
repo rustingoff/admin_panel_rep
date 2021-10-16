@@ -28,7 +28,7 @@ func (cr *clientRepository) CreateClient(client model.Client) error {
 }
 
 func (cr *clientRepository) UpdateClient(client model.ClientUpdate, clientID uint) error {
-	err := cr.db.Debug().Model(&model.Client{}).Updates(&client).Where("id = ?", clientID).Error
+	err := cr.db.Debug().Model(&model.Client{}).Where("id = ?", clientID).Updates(&client).Error
 	return err
 }
 

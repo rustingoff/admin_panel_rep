@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/rustingoff/admin_panel_rep/internal/model"
 	"github.com/rustingoff/admin_panel_rep/internal/service"
@@ -27,39 +28,86 @@ func GetClientController(s service.ClientService) ClientController {
 }
 
 func (cc *clientController) CreateClient(c *gin.Context) {
-	var client model.Client
-
-	err := c.ShouldBindJSON(&client)
+	idnp, err := strconv.ParseUint(c.PostForm("idnp"), 10, 64)
 	if err != nil {
-		log.Printf("FAILED bind json to client structure with error: %v", err)
-		c.AbortWithStatusJSON(http.StatusBadRequest, "invalid request")
+		log.Printf("invalid idnp with error: %v", err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, "invalid idnp")
 		return
+	}
+
+	sum, err := strconv.ParseUint(c.PostForm("sum"), 10, 32)
+	if err != nil {
+		log.Printf("invalid sum with error: %v", err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, "invalid sum")
+		return
+	}
+
+	period, err := strconv.ParseUint(c.PostForm("time"), 10, 32)
+	if err != nil {
+		log.Printf("invalid time with error: %v", err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, "invalid time")
+		return
+	}
+
+	monthRate, err := strconv.ParseFloat(c.PostForm("monthly_rate"), 32)
+	if err != nil {
+		log.Printf("invalid monthly rate with error: %v", err)
+		c.AbortWithStatusJSON(http.StatusBadRequest, "invalid monthly rate")
+		return
+	}
+
+	var client = model.Client{
+		NrContract:  c.PostForm("nr_contract"),
+		FirstName:   c.PostForm("first_name"),
+		LastName:    c.PostForm("last_name"),
+		IDNP:        idnp,
+		Phone:       c.PostForm("phone"),
+		Sum:         sum,
+		Time:        period,
+		SignDate:    c.PostForm("sign_date"),
+		MonthlyRate: fmt.Sprintf("%.2f", monthRate),
 	}
 
 	err = cc.cService.CreateClient(client)
 	if err != nil {
 		log.Printf("FAILED create client with error: %v", err)
-		c.AbortWithStatusJSON(http.StatusInternalServerError, "server can't create a client")
+		c.AbortWithStatusJSON(http.StatusInternalServerError, "can't create a client")
 		return
 	}
 
-	c.JSON(http.StatusCreated, "created")
+	c.HTML(http.StatusCreated, "index.html", nil)
 }
 
 func (cc *clientController) UpdateClient(c *gin.Context) {
-	var client model.ClientUpdate
-
-	clientID, err := strconv.Atoi(c.Param("clientID"))
-	if err != nil || clientID < 1 {
-		log.Printf("FAILED convert param to int with error: %v", err)
-		c.AbortWithStatusJSON(http.StatusBadRequest, "invalid url")
-		return
+	idnp, err := strconv.ParseUint(c.PostForm("idnp"), 10, 64)
+	if err != nil {
+		idnp = 0
 	}
 
-	err = c.BindJSON(&client)
+	sum, err := strconv.ParseUint(c.PostForm("sum"), 10, 32)
 	if err != nil {
-		log.Printf("FAILED bind json to client update structure with error: %v", err)
-		c.AbortWithStatusJSON(http.StatusBadRequest, "invalid request")
+		sum = 0
+	}
+
+	period, err := strconv.ParseUint(c.PostForm("time"), 10, 32)
+	if err != nil {
+		period = 0
+	}
+
+	var client = model.ClientUpdate{
+		NrContract: c.PostForm("nr_contract"),
+		FirstName:  c.PostForm("first_name"),
+		LastName:   c.PostForm("last_name"),
+		IDNP:       idnp,
+		Phone:      c.PostForm("phone"),
+		Sum:        sum,
+		Time:       period,
+		SignDate:   c.PostForm("sign_date"),
+	}
+
+	clientID, err := strconv.ParseUint(c.PostForm("ID"), 10, 8)
+	if err != nil {
+		c.AbortWithStatusJSON(http.StatusBadRequest, "invalid data")
 		return
 	}
 
@@ -70,13 +118,14 @@ func (cc *clientController) UpdateClient(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, "updated")
+	c.HTML(http.StatusOK, "client_update.html", clientID)
 }
 
 func (cc *clientController) DeleteClient(c *gin.Context) {
-	clientID, err := strconv.Atoi(c.Param("clientID"))
+
+	clientID, err := strconv.Atoi(c.Query("id"))
 	if err != nil || clientID < 1 {
-		log.Printf("FAILED convert param to int with error: %v", err)
+		log.Printf("FAILED convert query to int with error: %v", err)
 		c.AbortWithStatusJSON(http.StatusBadRequest, "invalid url")
 		return
 	}
@@ -88,7 +137,7 @@ func (cc *clientController) DeleteClient(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, "deleted")
+	c.Redirect(http.StatusPermanentRedirect, "/api/clients")
 }
 
 func (cc *clientController) GetAllClients(c *gin.Context) {

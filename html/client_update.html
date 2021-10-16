@@ -6,18 +6,18 @@
           name="viewport">
     <meta content="ie=edge" http-equiv="X-UA-Compatible">
     <title>Document</title>
-    <link href="static/css/style.css" rel="stylesheet">
+    <link href="/api/static/css/style.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com" rel="preconnect">
     <link crossorigin href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-    <link href="static/img/logo_4.png" rel="icon" type="image/x-icon">
+    <link href="/api/static/img/logo_4.png" rel="icon" type="image/x-icon">
 </head>
 <body>
 <header>
     <div class="container">
         <div class="head">
             <div class="logo">
-                <img alt="logo" src="static/img/logo_4.png">
+                <img alt="logo" src="/api/static/img/logo_4.png">
             </div>
             <div class="contact">
                 <a href="#" class="contact__link">Adăuga Client</a>
@@ -34,24 +34,25 @@
             <div class="main__content">
                 <div class="main__fields">
                     <div class="main__txt">
-                        <h1>Completati datele</h1>
+                        <h1>Updatati datele</h1>
                     </div>
                     <div class="main__forms">
-                        <form action="/api/clients" method="post">
+                        <form action="/api/clients/update" method="post" name="update_form">
                             <div class="form__contact">
-                                <input placeholder="Nume" required name="first_name" type="text">
-                                <input placeholder="Prenume" required name="last_name" type="text">
-                                <input placeholder="Nr contact" required name="nr_contract" type="number">
-                                <input placeholder="IDNP" required name="idnp" type="number">
-                                <input placeholder="Nr de telefon" required name="phone" type="tel">
-                                <input placeholder="Suma" required name="sum" type="number">
-                                <input placeholder="Termen" required name="time" type="number">
+                                <input type="hidden" name="ID" value="{{.}}">
+                                <input placeholder="Nume" name="first_name" type="text">
+                                <input placeholder="Prenume" name="last_name" type="text">
+                                <input placeholder="Nr contact" name="nr_contract" type="number">
+                                <input placeholder="IDNP" name="idnp" type="number">
+                                <input placeholder="Nr de telefon" name="phone" type="tel">
+                                <input placeholder="Suma" name="sum" type="number">
+                                <input placeholder="Termen" name="time" type="number">
                                 <input id="dates" onblur="(this.type='text')" onfocus="(this.type='date')"
-                                       placeholder="Data semnarii" required name="sign_date" type="date">
-                                <input placeholder="Rata lunara" required name="monthly_rate" type="number" step="0.1">
+                                       placeholder="Data semnarii" name="sign_date" type="date">
+                                <input placeholder="Rata lunara" name="monthly_rate" type="number" step="0.1">
                             </div>
                             <div class="form__btn">
-                                <button type="submit">Completeaza</button>
+                                <button type="submit">Update</button>
                             </div>
                         </form>
                     </div>

@@ -25,9 +25,7 @@
                     <a href="/api/clients">Acasa</a>
                     <a href="/api/home">Adăuga Client</a>
                     <a href="#">Adăuga utilizator</a>
-                    <form action="/api/log_out" method="post">
-                        <button type="submit">Log Out</button>
-                    </form>
+                    <a href="/api/log_out">Log Out</a>
                 </div>
             </div>
         </div>
@@ -39,6 +37,7 @@
                 <table>
                     <tbody>
                     <tr>
+                        <td>ID</td>
                         <td>Nume/Prenume</td>
                         <td>Nr contact</td>
                         <td>IDNP</td>
@@ -51,6 +50,7 @@
                     </tr>
                     {{ range . }}
                         <tr>
+                            <td>{{ .ID }}</td>
                             <td>{{ .LastName }} {{ .FirstName }}</td>
                             <td>{{ .NrContract }}</td>
                             <td>{{ .IDNP }}</td>
@@ -60,9 +60,9 @@
                             <td>{{ .SignDate }}</td>
                             <td>{{ .MonthlyRate }}</td>
                             <td>
-                                <div class="table__btn">
-                                    <button>Edit</button>
-                                    <button>Șterge</button>
+                                <div>
+                                <a href="/api/clients/update/?id={{.ID}}">Edit</a>
+                                <a href="/api/clients/delete/?id={{.ID}}">Șterge</a>
                                 </div>
                             </td>
                         </tr>
