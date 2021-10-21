@@ -79,6 +79,8 @@ func (cc *clientController) CreateClient(c *gin.Context) {
 }
 
 func (cc *clientController) UpdateClient(c *gin.Context) {
+
+	//todo return client for update
 	idnp, err := strconv.ParseUint(c.PostForm("idnp"), 10, 64)
 	if err != nil {
 		idnp = 0

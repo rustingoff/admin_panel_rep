@@ -29,6 +29,9 @@ var (
 )
 
 func main() {
+
+	// generate pdf from client contract
+
 	viper.SetConfigName("config")
 	viper.AddConfigPath("./config/")
 
